@@ -1,0 +1,43 @@
+const formPage = document.getElementById("formPage");
+const cardPage = document.getElementById("cardPage");
+document.getElementById("studentForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("studentName").value;
+  const img = document.getElementById("studentImage").files[0];
+  document.getElementById("displayName").innerText = name;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById("previewImage").src = reader.result;
+  };
+  reader.readAsDataURL(img);
+  formPage.classList.remove("active");
+  cardPage.classList.add("active");
+});
+
+function downloadPDF() {
+  const card = document.getElementById("achievementCard");
+  html2canvas(card, { scale: 3 }).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const width = 210;
+    const height = (canvas.height * width) / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 20, width, height);
+    pdf.save("PhaniSoftTech_Achievement.pdf");
+  });
+}
+function shareLinkedIn() {
+  const postText =
+`I have successfully completed the "Quick Start Your Career in IT with Mini App Development" workshop conducted by Phani Soft Tech 🏆
+
+As part of the mini app development, I have created this Achievement Card Generator using HTML, CSS, and JavaScript.
+
+🔗 Company Page: https://www.linkedin.com/company/phanisofttech/`;
+  navigator.clipboard.writeText(postText).then(() => {
+    alert("LinkedIn post content copied! Paste it (Ctrl + V) in LinkedIn.");
+  });
+  window.open(
+    "https://www.linkedin.com/sharing/share-offsite/",
+    "_blank"
+  );
+}
